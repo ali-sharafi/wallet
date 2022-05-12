@@ -1,8 +1,11 @@
-module test/web-service-gin
+module github.com/ali-sharafi/wallet
 
-go 1.17
+go 1.18
 
-require github.com/gin-gonic/gin v1.7.7
+require (
+	github.com/gin-gonic/gin v1.7.7
+	github.com/go-ini/ini v1.66.4
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
