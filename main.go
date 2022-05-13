@@ -5,12 +5,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ali-sharafi/wallet/models"
 	"github.com/ali-sharafi/wallet/routes"
 	"github.com/ali-sharafi/wallet/settings"
 )
 
 func init() {
 	settings.Setup()
+	models.Setup()
 }
 
 func main() {

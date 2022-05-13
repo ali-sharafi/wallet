@@ -7,6 +7,16 @@ import (
 	"github.com/go-ini/ini"
 )
 
+type Database struct {
+	Type     string
+	User     string
+	Password string
+	Host     string
+	Name     string
+}
+
+var DatabaseSetting = &Database{}
+
 type Server struct {
 	RunMode      string
 	HttpPort     int
@@ -27,6 +37,7 @@ func Setup() {
 	}
 
 	mapTo("server", ServerSetting)
+	mapTo("database", DatabaseSetting)
 
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
