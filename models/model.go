@@ -33,10 +33,11 @@ func Setup() {
 }
 
 func seedTable() {
+	dateTimeFormat := "2006-01-02 15:04:05"
 	wallets := []Wallet{
-		{ID: 1, Balance: "1000", CreatedAt: time.Now().Format(time.RFC822Z), UpdatedAt: time.Now().String()},
-		{ID: 2, Balance: "1000", CreatedAt: time.Now().String(), UpdatedAt: time.Now().String()},
-		{ID: 3, Balance: "1000", CreatedAt: time.Now().String(), UpdatedAt: time.Now().String()},
+		{ID: 1, Balance: "1000", CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
+		{ID: 2, Balance: "1000", CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
+		{ID: 3, Balance: "1000", CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
 	}
 
 	db.Delete(&Wallet{})
