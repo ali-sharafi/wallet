@@ -18,7 +18,7 @@ func init() {
 func main() {
 	routeHandler := routes.InitRouter()
 
-	endPoint := fmt.Sprintf(":%d", settings.ServerSetting.HttpPort)
+	endPoint := fmt.Sprintf("localhost:%d", settings.ServerSetting.HttpPort)
 	readTimeout := settings.ServerSetting.ReadTimeout
 	writeTimeout := settings.ServerSetting.WriteTimeout
 	maxHeaderBytes := 1 << 20
