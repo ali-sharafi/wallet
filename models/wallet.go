@@ -1,6 +1,9 @@
 package models
 
-import "strconv"
+import (
+	"errors"
+	"strconv"
+)
 
 type Wallet struct {
 	ID        int    `gorm:"primary_key" json:"id"`
@@ -45,9 +48,31 @@ func AddCredit(walletID int, amount int) (*Wallet, error) {
 		return nil, err
 	}
 
-	currentBalance, err := strconv.Atoi(wallet.Balance)
+	currentBalance, _ := strconv.Atoi(wallet.Balance)
 
 	wallet.Balance = strconv.Itoa(currentBalance + amount)
+
+	db.Save(&wallet)
+
+	return &wallet, nil
+}
+
+func AddDebit(walletID int, amount int) (*Wallet, error) {
+	var wallet = Wallet{ID: walletID}
+
+	err := db.First(&wallet).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	currentBalance, _ := strconv.Atoi(wallet.Balance)
+
+	if currentBalance-amount < 0 {
+		return nil, errors.New("the Balance is not enough")
+	}
+
+	wallet.Balance = strconv.Itoa(currentBalance - amount)
 
 	db.Save(&wallet)
 

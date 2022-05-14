@@ -16,5 +16,7 @@ func InitRouter() *gin.Engine {
 
 	apiV1.POST("/:id/credit", controllers.AddCredit)
 
+	apiV1.POST("/:id/debit", controllers.AddDebit)
+
 	return r
 }
