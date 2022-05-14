@@ -10,6 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CreditForm struct {
+	amount int `form:"amount"`
+}
+
 func GetWallets(c *gin.Context) {
 	res := utils.Gin{C: c}
 	wallets, err := models.GetWallets()
@@ -41,7 +45,32 @@ func GetBalance(c *gin.Context) {
 }
 
 func AddCredit(c *gin.Context) {
-	fmt.Println("Here is AddCredit")
+	res := utils.Gin{C: c}
+	var form CreditForm
+	walletID, err := strconv.Atoi(c.Params.ByName("id"))
+
+	if err != nil {
+		res.Response(http.StatusBadRequest, "Invalid Params", nil)
+		return
+	}
+
+	err = c.ShouldBindJSON(&form)
+
+	fmt.Printf("amount: %v", form.amount)
+
+	if form.amount < 1 || err != nil {
+		res.Response(http.StatusBadRequest, "Amount is not valid", nil)
+		return
+	}
+
+	wallet, err := models.AddCredit(walletID, form.amount)
+
+	if err != nil {
+		res.Response(http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	res.Response(http.StatusOK, "Success", wallet)
 }
 
 func AddDebit(c *gin.Context) {
