@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ali-sharafi/wallet/settings"
+	"github.com/ali-sharafi/wallet/pkg/settings"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )

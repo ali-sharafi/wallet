@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/ali-sharafi/wallet/models"
+	"github.com/ali-sharafi/wallet/pkg/settings"
 	"github.com/ali-sharafi/wallet/routes"
-	"github.com/ali-sharafi/wallet/settings"
 )
 
 func init() {
