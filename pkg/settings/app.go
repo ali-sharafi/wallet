@@ -27,11 +27,8 @@ type Server struct {
 var ServerSetting = &Server{}
 
 type Redis struct {
-	Host        string
-	Password    string
-	MaxIdle     int
-	MaxActive   int
-	IdleTimeout time.Duration
+	Host     string
+	Password string
 }
 
 var RedisSetting = &Redis{}
@@ -52,7 +49,6 @@ func Setup() {
 
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
-	RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
 }
 
 // mapTo map section

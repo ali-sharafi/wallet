@@ -5,7 +5,8 @@ import (
 	"strconv"
 
 	"github.com/ali-sharafi/wallet/models"
-	"github.com/ali-sharafi/wallet/utils"
+	"github.com/ali-sharafi/wallet/pkg/gredis"
+	"github.com/ali-sharafi/wallet/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,12 +35,21 @@ func GetBalance(c *gin.Context) {
 		return
 	}
 
-	balance, err := models.GetBalance(walletID)
+	balance, err := gredis.Get(strconv.Itoa(walletID))
+
+	if err == nil {
+		res.Response(http.StatusOK, "Success", balance)
+		return
+	}
+
+	balance, err = models.GetBalance(walletID)
 
 	if err != nil {
 		res.Response(http.StatusBadRequest, err.Error(), nil)
 		return
 	}
+
+	gredis.Set(strconv.Itoa(walletID), balance, 3600)
 
 	res.Response(http.StatusOK, "Success", balance)
 }

@@ -1,62 +1,54 @@
 package gredis
 
-var RedisConn *redis.Pool
-
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
-	"github.com/gomodule/redigo/redis"
+	"github.com/ali-sharafi/wallet/pkg/settings"
+	"github.com/go-redis/redis/v8"
 )
 
-func Setup() error {
-	RedisConn = &redis.Pool{
-		MaxIdle:     setting.RedisSetting.MaxIdle,
-		MaxActive:   setting.RedisSetting.MaxActive,
-		IdleTimeout: setting.RedisSetting.IdleTimeout,
+var ctx = context.Background()
 
+func Setup() *redis.Client {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     settings.RedisSetting.Host,
+		Password: settings.RedisSetting.Password,
+		DB:       0,
+	})
 
-		
-		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", setting.RedisSetting.Host)
-			if err != nil {
-				return nil, err
-			}
-			if setting.RedisSetting.Password != "" {
-				if _, err := c.Do("AUTH", setting.RedisSetting.Password); err != nil {
-					c.Close()
-					return nil, err
-				}
-			}
-			return c, err
-		},
-		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
-		},
-	}
-
-	return nil
+	return rdb
 }
 
-func Set(key string, data interface{}, time int) error {
-	conn := RedisConn.Get()
-	defer conn.Close()
+func Set(key string, data interface{}, expireTime time.Duration) error {
+	rdb := Setup()
 
 	value, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	_, err = conn.Do("SET", key, value)
-	if err != nil {
-		return err
-	}
+	err = rdb.Set(ctx, key, value, expireTime*time.Second).Err()
 
-	_, err = conn.Do("EXPIRE", key, time)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func Get(key string) (interface{}, error) {
+	rdb := Setup()
+	var result interface{}
+	value, err := rdb.Get(ctx, key).Result()
+	if err == redis.Nil {
+		return nil, fmt.Errorf("%v does not exists", key)
+	} else if err != nil {
+		return nil, err
+	} else {
+		json.Unmarshal([]byte(value), &result)
+		return result, nil
+	}
 }
