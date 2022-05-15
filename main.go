@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ali-sharafi/wallet/models"
+	"github.com/ali-sharafi/wallet/pkg/logging"
 	"github.com/ali-sharafi/wallet/pkg/settings"
 	"github.com/ali-sharafi/wallet/routes"
 )
@@ -13,6 +14,7 @@ import (
 func init() {
 	settings.Setup()
 	models.Setup()
+	logging.Setup()
 }
 
 func main() {
