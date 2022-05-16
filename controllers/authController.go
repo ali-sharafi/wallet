@@ -8,8 +8,8 @@ import (
 	"github.com/ali-sharafi/wallet/models"
 	"github.com/ali-sharafi/wallet/pkg/settings"
 	"github.com/ali-sharafi/wallet/pkg/utils"
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	validator "gopkg.in/validator.v2"
 )
 
