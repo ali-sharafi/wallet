@@ -9,6 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shopspring/decimal"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var db *gorm.DB
@@ -30,10 +31,18 @@ func Setup() {
 	db.DB().SetMaxOpenConns(100)
 
 	migrate()
-	seedTable()
+	seedWallets()
+	seedAuth()
 }
 
-func seedTable() {
+func seedAuth() {
+	password, _ := bcrypt.GenerateFromPassword([]byte("12345678"), 12)
+
+	db.Delete(&Auth{})
+	db.Create(&Auth{ID: 1, Username: "test@test.com", Password: string(password)})
+}
+
+func seedWallets() {
 	dateTimeFormat := "2006-01-02 15:04:05"
 	balance, _ := decimal.NewFromString("1000")
 	wallets := []Wallet{
@@ -49,5 +58,5 @@ func seedTable() {
 }
 
 func migrate() {
-	db.AutoMigrate(&Wallet{})
+	db.AutoMigrate(&Wallet{}, &Auth{})
 }
