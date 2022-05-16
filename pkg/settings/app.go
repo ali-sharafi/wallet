@@ -33,6 +33,12 @@ type Redis struct {
 
 var RedisSetting = &Redis{}
 
+type App struct {
+	JwtSecret string
+}
+
+var AppSetting = &App{}
+
 var cfg *ini.File
 
 // Setup initialize the configuration instance
@@ -46,6 +52,7 @@ func Setup() {
 	mapTo("server", ServerSetting)
 	mapTo("database", DatabaseSetting)
 	mapTo("redis", RedisSetting)
+	mapTo("app", AppSetting)
 
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
