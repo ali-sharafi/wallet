@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ali-sharafi/wallet/pkg/file"
+	logConsole "github.com/sirupsen/logrus"
 )
 
 var (
@@ -29,6 +30,7 @@ func Setup() {
 
 func Log(v ...interface{}) {
 	logger.Println(v)
+	logConsole.Info(v)
 }
 
 func getLogFilePath() string {
