@@ -12,6 +12,8 @@ func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(RequestLogger())
 
+	r.POST("/auth", controllers.GetAuth)
+
 	apiV1 := r.Group("/api/v1/wallets")
 
 	apiV1.GET("/", controllers.GetWallets)
