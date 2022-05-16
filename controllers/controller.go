@@ -8,10 +8,11 @@ import (
 	"github.com/ali-sharafi/wallet/pkg/gredis"
 	"github.com/ali-sharafi/wallet/pkg/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/shopspring/decimal"
 )
 
 var form struct {
-	Amount   int `json:"amount"`
+	Amount   string `json:"amount"`
 	WalletID int
 }
 
@@ -107,8 +108,8 @@ func bindAndValidate(c *gin.Context) (result bool, msg string) {
 		return false, err.Error()
 	}
 
-	if form.Amount < 1 || err != nil {
-		return false, "the amount value must be greater than zero"
+	if amount, err := decimal.NewFromString(form.Amount); amount.IsNegative() || err != nil {
+		return false, "the amount value must be positive"
 	}
 
 	return true, ""

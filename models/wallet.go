@@ -2,14 +2,15 @@ package models
 
 import (
 	"errors"
-	"strconv"
+
+	"github.com/shopspring/decimal"
 )
 
 type Wallet struct {
-	ID        int    `gorm:"primary_key" json:"id"`
-	Balance   string `json:"balance"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID        int             `gorm:"primary_key" json:"id"`
+	Balance   decimal.Decimal `json:"balance"`
+	CreatedAt string          `json:"created_at"`
+	UpdatedAt string          `json:"updated_at"`
 }
 
 func GetWallets() ([]Wallet, error) {
@@ -27,7 +28,7 @@ func GetWallets() ([]Wallet, error) {
 	return wallets, nil
 }
 
-func GetBalance(walletID int) (*string, error) {
+func GetBalance(walletID int) (*decimal.Decimal, error) {
 	var wallet = Wallet{ID: walletID}
 
 	err := db.First(&wallet).Error
@@ -39,7 +40,7 @@ func GetBalance(walletID int) (*string, error) {
 	return &wallet.Balance, nil
 }
 
-func AddCredit(walletID int, amount int) (*Wallet, error) {
+func AddCredit(walletID int, amount string) (*Wallet, error) {
 	var wallet = Wallet{ID: walletID}
 
 	err := db.First(&wallet).Error
@@ -48,16 +49,20 @@ func AddCredit(walletID int, amount int) (*Wallet, error) {
 		return nil, err
 	}
 
-	currentBalance, _ := strconv.Atoi(wallet.Balance)
+	newAmount, err := decimal.NewFromString(amount)
 
-	wallet.Balance = strconv.Itoa(currentBalance + amount)
+	if err != nil {
+		return nil, err
+	}
+
+	wallet.Balance = wallet.Balance.Add(newAmount)
 
 	db.Save(&wallet)
 
 	return &wallet, nil
 }
 
-func AddDebit(walletID int, amount int) (*Wallet, error) {
+func AddDebit(walletID int, amount string) (*Wallet, error) {
 	var wallet = Wallet{ID: walletID}
 
 	err := db.First(&wallet).Error
@@ -66,13 +71,17 @@ func AddDebit(walletID int, amount int) (*Wallet, error) {
 		return nil, err
 	}
 
-	currentBalance, _ := strconv.Atoi(wallet.Balance)
+	newAmount, err := decimal.NewFromString(amount)
 
-	if currentBalance-amount < 0 {
+	if err != nil {
+		return nil, err
+	}
+
+	if wallet.Balance.Sub(newAmount).IsNegative() {
 		return nil, errors.New("the Balance is not enough")
 	}
 
-	wallet.Balance = strconv.Itoa(currentBalance - amount)
+	wallet.Balance = wallet.Balance.Sub(newAmount)
 
 	db.Save(&wallet)
 

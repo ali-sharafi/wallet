@@ -8,6 +8,7 @@ import (
 	"github.com/ali-sharafi/wallet/pkg/settings"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/shopspring/decimal"
 )
 
 var db *gorm.DB
@@ -34,10 +35,11 @@ func Setup() {
 
 func seedTable() {
 	dateTimeFormat := "2006-01-02 15:04:05"
+	balance, _ := decimal.NewFromString("1000")
 	wallets := []Wallet{
-		{ID: 1, Balance: "1000", CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
-		{ID: 2, Balance: "1000", CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
-		{ID: 3, Balance: "1000", CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
+		{ID: 1, Balance: balance, CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
+		{ID: 2, Balance: balance, CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
+		{ID: 3, Balance: balance, CreatedAt: time.Now().Format(dateTimeFormat), UpdatedAt: time.Now().Format(dateTimeFormat)},
 	}
 
 	db.Delete(&Wallet{})
